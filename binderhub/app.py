@@ -65,7 +65,10 @@ from .repoproviders import (
     RepoProvider,
     ZenodoProvider,
 )
-from .utils import ByteSpecification, url_path_join
+
+from .utils import CPUSpecification, ByteSpecification, url_path_join
+from .events import EventLog
+
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 

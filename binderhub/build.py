@@ -20,7 +20,7 @@ from traitlets import Any, Bool, Dict, Integer, Unicode, default
 from traitlets.config import LoggingConfigurable
 
 from .utils import KUBE_REQUEST_TIMEOUT, ByteSpecification, rendezvous_rank
-
+from .utils import CPUSpecification
 
 class ProgressEvent:
     """
@@ -263,6 +263,27 @@ class KubernetesBuildExecutor(BuildExecutor):
         config=True,
     )
 
+    cpu_request = CPUSpecification(
+        0,
+        help="""
+        Amount of cpu to request when scheduling a build
+
+        0 reserves no cpu.
+
+        """,
+        config=True,
+    )
+
+    cpu_limit = CPUSpecification(
+        0,
+        help="""
+        Max amount of cpu allocated for each image build process.
+
+        0 sets no limit.
+        """,
+        config=True,
+    )
+
     memory_request = ByteSpecification(
         0,
         help=(
@@ -433,8 +454,8 @@ class KubernetesBuildExecutor(BuildExecutor):
                         args=self.get_cmd(),
                         volume_mounts=volume_mounts,
                         resources=client.V1ResourceRequirements(
-                            limits={"memory": self.memory_limit},
-                            requests={"memory": self.memory_request},
+                            limits={'memory': self.memory_limit, 'cpu': self.cpu_limit},
+                            requests={'memory': self.memory_request, 'cpu': self.cpu_request},
                         ),
                         env=env,
                     )
