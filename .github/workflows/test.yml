@@ -237,7 +237,8 @@ jobs:
         if: matrix.test-variation == 'upgrade'
         run: |
           . ./ci/common
-          UPGRADE_FROM_VERSION=$(curl -sSL https://jupyterhub.github.io/helm-chart/info.json | jq -er '.binderhub.${{ matrix.upgrade-from }}')
+
+          UPGRADE_FROM_VERSION=$(curl -sS https://noroutine.github.io/binderhub-helm-chart/info.json | jq -er '.binderhub.${{ matrix.upgrade-from }}')
           echo "UPGRADE_FROM_VERSION=$UPGRADE_FROM_VERSION" >> $GITHUB_ENV
 
           echo ""
@@ -257,7 +258,7 @@ jobs:
           fi
 
           helm install binderhub-test \
-              --repo https://jupyterhub.github.io/helm-chart/ binderhub \
+              --repo https://noroutine.github.io/binderhub-helm-chart/ binderhub \
               --disable-openapi-validation \
               --version=$UPGRADE_FROM_VERSION \
               --values "$old_config" \

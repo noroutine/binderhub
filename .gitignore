@@ -159,3 +159,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+testing/my-binder-k8s-hub
+README-oleksii.md
+lab03.conf
