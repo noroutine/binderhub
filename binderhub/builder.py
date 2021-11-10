@@ -339,11 +339,6 @@ class BuildHandler(BaseHandler):
             ref=ref
         ).replace('_', '-').lower()
 
-        await self.emit({
-                'phase': 'USE REGISTRY VALUE',
-                'message': self.settings['use_registry'],
-        })
-
         if self.settings['use_registry']:
             await self.emit({
                 'phase': 'USE REGISTRY DEBUG',
