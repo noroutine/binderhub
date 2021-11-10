@@ -348,7 +348,7 @@ class BuildHandler(BaseHandler):
                 try:
                     await self.emit({
                         'phase': 'IMAGE NAME',
-                        'message': image_name,
+                        'message': 'image try is block',
                     })
                     app_log.debug("Checking for image %s in the registry", *_get_image_basename_and_tag(image_name))
                     image_manifest = await self.registry.get_image_manifest(*_get_image_basename_and_tag(image_name))
@@ -357,7 +357,7 @@ class BuildHandler(BaseHandler):
                 except BaseException as err:
                     await self.emit({
                         'phase': 'IMAGE EXCEPTION ERROR',
-                        'message': err,
+                        'message': 'Image exception error',
                     })
                     app_log.exception("Failed to get image manifest for %s: %s", image_name, err)
                     image_found = False
