@@ -192,8 +192,7 @@ class DockerRegistry(LoggingConfigurable):
         if self.token_url:
             auth_req = httpclient.HTTPRequest(
                 url_concat(self.token_url, {
-                    "scope": "repository:{}:pull".format(image),
-                    "service": "container_registry"
+                    "scope": "repository:{}:pull".format(image)
                 }),
                 auth_username=self.username,
                 auth_password=self.password,
