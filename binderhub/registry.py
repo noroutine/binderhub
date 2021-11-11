@@ -218,6 +218,7 @@ class DockerRegistry(LoggingConfigurable):
         self.log.debug(
             f"Getting registry token from {token_url} service={service} scope={scope}"
         )
+        self.log.debug(f"Using username {self.username}")
         auth_resp = await client.fetch(auth_req)
         response_body = json.loads(auth_resp.body.decode("utf-8", "replace"))
 
@@ -260,17 +261,19 @@ class DockerRegistry(LoggingConfigurable):
         token = None
         # first, get a token to perform the manifest request
         if self.token_url:
+            self.log.debug(f"Using token url {self.token_url}")
             token = await self._get_token(
                 client,
                 self.token_url,
                 scope=f"repository:{image}:pull",
-                service="container_registry",
+                service=urlparse(self.token_url).hostname,
             )
             req = httpclient.HTTPRequest(
                 url,
                 headers={"Authorization": f"Bearer {token}"},
             )
         else:
+            self.log.debug(f"Using basic auth")
             # Use basic HTTP auth (htpasswd)
             req = httpclient.HTTPRequest(
                 url,
