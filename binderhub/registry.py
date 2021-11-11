@@ -191,13 +191,9 @@ class DockerRegistry(LoggingConfigurable):
         # first, get a token to perform the manifest request
         if self.token_url:
             auth_req = httpclient.HTTPRequest(
-                url_concat(
-                    self.token_url,
-                    {
-                        "scope": f"repository:{image}:pull",
-                        "service": "container_registry",
-                    },
-                ),
+                url_concat(self.token_url, {
+                    "scope": "repository:{}:pull".format(image)
+                }),
                 auth_username=self.username,
                 auth_password=self.password,
             )
