@@ -452,6 +452,13 @@ class Build:
                         value="user",
                         effect="NoSchedule",
                     ),
+                    # GDP
+                    client.V1Toleration(
+                        key='gdp-jupyterhub/dedicated',
+                        operator='Equal',
+                        value='all',
+                        effect='NoSchedule',
+                    ),
                 ],
                 node_selector=self.node_selector,
                 volumes=volumes,
