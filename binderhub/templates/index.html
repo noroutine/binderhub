@@ -19,7 +19,7 @@
         </div>
       </div>
       <div id="tutorials" class="text-center">
-        <h4>New to Binder? Get started with a <a href="https://the-turing-way.netlify.app/communication/binder/zero-to-binder.html" target="_blank">Zero-to-Binder tutorial</a> in Julia, Python, or R.</h4>
+        <h4>New to Binder? Get started with a Zero-to-Binder tutorial in <a href="https://github.com/alan-turing-institute/the-turing-way/blob/master/workshops/boost-research-reproducibility-binder/workshop-presentations/zero-to-binder-julia.md">Julia</a>, <a href="https://github.com/alan-turing-institute/the-turing-way/blob/master/workshops/boost-research-reproducibility-binder/workshop-presentations/zero-to-binder-python.md">Python</a> or <a href="https://github.com/alan-turing-institute/the-turing-way/blob/master/workshops/boost-research-reproducibility-binder/workshop-presentations/zero-to-binder-r.md">R</a>.</h4>
       </div>
       {% endblock header %}
 
@@ -84,7 +84,18 @@
             </div>
           </div>
         </div>
-
+        <!--Personal Access Token section-->
+        <div class="form-row row">
+          <div class="form-group col-md-4">
+            <label for="user">User Email</label>
+            <input class="form-control" type="text" id="userEmail" placeholder="User Email"/>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="pat">Personal Access Token</label>
+            <input class="form-control" type="text" id="pat" placeholder="Personal Access Token" />
+          </div>
+        </div>
+        <!-- Personal access token section end -->
         <!--url section-->
         <div class="url row">
             <div class="dropdownmenu">
