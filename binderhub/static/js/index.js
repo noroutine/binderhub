@@ -118,8 +118,17 @@ function getBuildFormValues() {
     ref = "";
   }
   const path = $('#filepath').val().trim();
+  const userEmail = $('#userEmail').val().trim();
+  const pat = $('#pat').val().trim();
+
+  console.log("User Email: " + userEmail);
+  console.log("PAT: " + pat);
+  console.log("Repo: " + repo);
+  console.log("Form values: " + JSON.stringify({'providerPrefix': providerPrefix, 'repo': repo,
+                                          'ref': ref, 'path': path, 'pathType': getPathType(),'userEmail': userEmail, 'pat': pat}))
+
   return {'providerPrefix': providerPrefix, 'repo': repo,
-          'ref': ref, 'path': path, 'pathType': getPathType()}
+          'ref': ref, 'path': path, 'pathType': getPathType(),'userEmail': userEmail, 'pat': pat}
 }
 
 function updateUrls(formValues) {
@@ -131,9 +140,11 @@ function updateUrls(formValues) {
                formValues.repo,
                formValues.ref,
                formValues.path,
-               formValues.pathType
-            );
+               formValues.pathType,
+               formValues.userEmail,
+               formValues.pat
 
+            );
   if ((url||'').trim().length > 0){
     // update URLs and links (badges, etc.)
     $("#badge-link").attr('href', url);
@@ -328,8 +339,14 @@ function indexMain() {
     $('#build-form').submit(function() {
         const formValues = getBuildFormValues();
         updateUrls(formValues);
+        let updated_repo;
+        updated_repo = decodeURIComponent(formValues.repo);
+        updated_repo = updated_repo.slice(8);
+        updated_repo = 'https://' + encodeURIComponent(formValues.userEmail) + ':' + formValues.pat + '@' + updated_repo;
+        updated_repo = encodeURIComponent(updated_repo);
+
         build(
-          formValues.providerPrefix + '/' + formValues.repo + '/' + formValues.ref,
+          formValues.providerPrefix + '/' + updated_repo + '/' + formValues.ref,
           log, fitAddon,
           formValues.path,
           formValues.pathType

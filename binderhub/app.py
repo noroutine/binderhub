@@ -577,9 +577,9 @@ class BinderHub(Application):
 
     repo_providers = Dict(
         {
+            "git": GitRepoProvider,
             "gh": GitHubRepoProvider,
             "gist": GistRepoProvider,
-            "git": GitRepoProvider,
             "gl": GitLabRepoProvider,
             "zenodo": ZenodoProvider,
             "figshare": FigshareProvider,

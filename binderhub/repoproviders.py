@@ -552,7 +552,9 @@ class GitRepoProvider(RepoProvider):
         return self.get_repo_url()
 
     def get_build_slug(self):
-        return self.repo
+        parsed = urlparse(self.repo)
+        replaced = parsed._replace(netloc=parsed.hostname)
+        return replaced.geturl()
 
 
 class GitLabRepoProvider(RepoProvider):
