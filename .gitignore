@@ -115,3 +115,7 @@ helm.txt
 # Federation data page
 doc/federation/data-federation.txt
 .vscode/
+testing/my-binder-k8s-hub
+README-oleksii.md
+lab03.conf
+
