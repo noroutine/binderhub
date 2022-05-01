@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: binderhub
+  name: {{ include "binderhub.fullname" . }}
   {{- if or (and .Values.ingress.https.enabled (eq .Values.ingress.https.type "kube-lego")) .Values.ingress.annotations }}
   annotations:
     {{- if and .Values.ingress.https.enabled (eq .Values.ingress.https.type "kube-lego") }}
@@ -24,7 +24,7 @@ spec:
             pathType: {{ $.Values.ingress.pathType }}
             backend:
               service:
-                name: binder
+                name: {{ include "binderhub.fullname" $ }}
                 port:
                   number: 80
       {{- with $host }}

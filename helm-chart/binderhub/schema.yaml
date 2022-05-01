@@ -42,6 +42,12 @@ required:
   - podAnnotations
   - global
 properties:
+
+  fullnameOverride:
+    type: [string, "null"]
+    description: |
+      Release name override
+
   pdb: &pdb-spec
     type: object
     additionalProperties: false

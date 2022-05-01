@@ -46,3 +46,57 @@ Render docker config.json for the registry-publishing secret and other docker co
 
 {{- $dockerConfig | toPrettyJson }}
 {{- end }}
+
+{{- /*
+  binderhub.appLabel:
+    Used by "binderhub.labels".
+*/}}
+{{- define "binderhub.appLabel" -}}
+{{ .Values.nameOverride | default .Chart.Name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- /*
+  binderhub.commonLabels:
+    Foundation for "binderhub.labels".
+    Provides labels: app, release, (chart and heritage).
+*/}}
+{{- define "binderhub.commonLabels" -}}
+app: {{ .appLabel | default (include "binderhub.appLabel" .) }}
+release: {{ .Release.Name }}
+{{- if not .matchLabels }}
+chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+heritage: {{ .heritageLabel | default .Release.Service }}
+{{- end }}
+{{- end }}
+
+{{- /*
+  binderhub.componentLabel:
+    Used by "binderhub.labels".
+
+    NOTE: The component label is determined by either...
+    - 1: The provided scope's .componentLabel
+    - 2: The template's filename if living in the root folder
+    - 3: The template parent folder's name
+    -  : ...and is combined with .componentPrefix and .componentSuffix
+*/}}
+{{- define "binderhub.componentLabel" -}}
+binder
+{{- end }}
+
+{{- /*
+  binderhub.labels:
+    Provides labels: component, app, release, (chart and heritage).
+*/}}
+{{- define "binderhub.labels" -}}
+component: {{ include "binderhub.componentLabel" . }}
+{{ include "binderhub.commonLabels" . }}
+{{- end }}
+
+
+{{- /*
+  binderhub.matchLabels:
+    Used to provide pod selection labels: component, app, release.
+*/}}
+{{- define "binderhub.matchLabels" -}}
+{{- $_ := merge (dict "matchLabels" true) . -}}
+{{ include "binderhub.labels" $_ }}
+{{- end }}

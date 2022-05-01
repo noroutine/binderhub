@@ -4,6 +4,8 @@
 # the old version of this file may need to be copied to ./binderhub-chart-config-old.yaml
 # before updating, and then deleted in a subsequent PR.
 
+fullnameOverride: binder
+
 service:
   type: NodePort
   nodePort: 30901

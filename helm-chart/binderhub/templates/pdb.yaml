@@ -6,12 +6,9 @@ apiVersion: policy/v1beta1
 {{- end }}
 kind: PodDisruptionBudget
 metadata:
-  name: binderhub
+  name: {{ include "binderhub.fullname" . }}
   labels:
-    app: binder
-    name: binder
-    component: binder
-    release: {{ .Release.Name }}
+    {{- include "binderhub.matchLabels" . | nindent 4 }}
     heritage: {{ .Release.Service }}
 spec:
   {{- if not (.Values.pdb.maxUnavailable | typeIs "<nil>") }}
@@ -22,8 +19,5 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: binder
-      name: binder
-      component: binder
-      release: {{ .Release.Name }}
+      {{- include "binderhub.matchLabels" . | nindent 6 }}
 {{- end }}

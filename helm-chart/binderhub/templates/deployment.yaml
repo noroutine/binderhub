@@ -1,14 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: binder
+  name: {{ include "binderhub.fullname" . }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: binder
-      component: binder
-      release: {{ .Release.Name }}
+      {{- include "binderhub.matchLabels" . | nindent 6 }}
   strategy:
     rollingUpdate:
         {{- if eq (.Values.replicas | int) 1 }}
@@ -18,10 +16,7 @@ spec:
   template:
     metadata:
       labels:
-        app: binder
-        name: binder
-        component: binder
-        release: {{ .Release.Name }}
+        {{- include "binderhub.matchLabels" . | nindent 8 }}
         heritage: {{ .Release.Service }}
         {{- with .Values.deployment.labels }}
         {{- . | toYaml | nindent 8 }}
@@ -49,13 +44,13 @@ spec:
       serviceAccountName: binderhub
       {{- end }}
       volumes:
-      - name: config
+      - name: secret-config
         secret:
-          secretName: binder-secret
+          secretName: {{ include "binderhub.fullname" . }}-binder-secret
       {{- if .Values.extraFiles }}
       - name: files
         secret:
-          secretName: binder-secret
+          secretName: {{ include "binderhub.fullname" . }}-binder-secret
           items:
             {{- range $file_key, $file_details := .Values.extraFiles }}
             - key: {{ $file_key | quote }}
@@ -68,7 +63,7 @@ spec:
       {{- if .Values.config.BinderHub.use_registry }}
       - name: docker-secret
         secret:
-          secretName: binder-build-docker-config
+          secretName: {{ include "binderhub.fullname" . }}-binder-build-docker-config
       {{- else }}
       - name: docker-socket
         hostPath:
@@ -90,7 +85,7 @@ spec:
         {{- end }}
         volumeMounts:
           - mountPath: /etc/binderhub/config/
-            name: config
+            name: secret-config
             readOnly: true
           {{- range $file_key, $file_details := .Values.extraFiles }}
           - mountPath: {{ $file_details.mountPath }}
