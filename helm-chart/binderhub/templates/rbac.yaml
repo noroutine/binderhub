@@ -6,7 +6,7 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: binderhub
+  name: {{ include "binderhub.fullname" . }}
 rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["pods"]
@@ -23,14 +23,14 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: binderhub
+  name: {{ include "binderhub.fullname" . }}
 subjects:
 - kind: ServiceAccount
   namespace: {{ .Release.Namespace }}
-  name: binderhub
+  name: {{ include "binderhub.fullname" . }}
 roleRef:
   kind: Role
-  name: binderhub
+  name: {{ include "binderhub.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: v1
@@ -41,7 +41,7 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: binderhub
+  name: {{ include "binderhub.fullname" . }}
 {{- if .Values.imageCleaner.enabled }}
 ---
 # image-cleaner role
