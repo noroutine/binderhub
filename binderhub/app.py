@@ -581,6 +581,19 @@ class BinderHub(Application):
 
         return proposal.value
 
+    launch_profiles = Dict(
+        {
+            "default": {
+                "name": "default",
+                "display_name": "Default",
+            },
+        },
+        config=True,
+        help="""
+        List of Launch Profiles
+        """,
+    )
+    
     concurrent_build_limit = Integer(
         32, config=True, help="""The number of concurrent builds to allow."""
     )
@@ -852,6 +865,7 @@ class BinderHub(Application):
                 "per_repo_quota": self.per_repo_quota,
                 "per_repo_quota_higher": self.per_repo_quota_higher,
                 "repo_providers": self.repo_providers,
+                "launch_profiles": self.launch_profiles,
                 "rate_limiter": RateLimiter(parent=self),
                 "use_registry": self.use_registry,
                 "build_class": self.build_class,

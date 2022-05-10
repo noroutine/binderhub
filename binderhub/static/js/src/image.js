@@ -3,10 +3,11 @@ import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
 const EventSource = NativeEventSource || EventSourcePolyfill;
 
 export default class BinderImage {
-  constructor(providerSpec, baseUrl, buildToken) {
+  constructor(providerSpec, baseUrl, buildToken, launchProfileId) {
     this.providerSpec = providerSpec;
     this.baseUrl = baseUrl;
     this.buildToken = buildToken;
+    this.launchProfileId = launchProfileId;
     this.callbacks = {};
     this.state = null;
   }
@@ -17,6 +18,9 @@ export default class BinderImage {
         apiUrl = apiUrl + `?build_token=${this.buildToken}`;
     }
 
+    if (this.launchProfileId) {
+        apiUrl = apiUrl + `?launch_profile_id=${this.launchProfileId}`;
+    }
     this.eventSource = new EventSource(apiUrl);
     this.eventSource.onerror = (err) => {
       console.error("Failed to construct event stream", err);
