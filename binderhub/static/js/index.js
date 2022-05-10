@@ -41,7 +41,7 @@ function update_favicon(path) {
     document.getElementsByTagName('head')[0].appendChild(link);
 }
 
-function v2url(providerPrefix, repository, ref, path, pathType) {
+function v2url(providerPrefix, repository, ref, path, pathType, launchProfileId) {
   // return a v2 url from a providerPrefix, repository, ref, and (file|url)path
   if (repository.length === 0) {
     // no repo, no url
@@ -57,6 +57,10 @@ function v2url(providerPrefix, repository, ref, path, pathType) {
   if (path && path.length > 0) {
     // encode the path, it will be decoded in loadingMain
     url = url + '?' + pathType + 'path=' + encodeURIComponent(path);
+  }
+  if (launchProfileId && launchProfileId.length > 0) {
+    // encode the path, it will be decoded in loadingMain
+    url = url + '?launchProfileId=' + encodeURIComponent(launchProfileId);
   }
   return url;
 }
@@ -127,8 +131,11 @@ function getBuildFormValues() {
   console.log("Form values: " + JSON.stringify({'providerPrefix': providerPrefix, 'repo': repo,
                                           'ref': ref, 'path': path, 'pathType': getPathType(),'userEmail': userEmail, 'pat': pat}))
 
+  const launchProfileId = ($("#launch_profile_id").val() || "default-profile").trim();
+  console.log("Launch with profile: " + launchProfileId);
+
   return {'providerPrefix': providerPrefix, 'repo': repo,
-          'ref': ref, 'path': path, 'pathType': getPathType(),'userEmail': userEmail, 'pat': pat}
+          'ref': ref, 'path': path, 'pathType': getPathType(),'userEmail': userEmail, 'pat': pat, 'launchProfileId': launchProfileId}
 }
 
 function updateUrls(formValues) {
@@ -141,9 +148,7 @@ function updateUrls(formValues) {
                formValues.ref,
                formValues.path,
                formValues.pathType,
-               formValues.userEmail,
-               formValues.pat
-
+               formValues.launchProfileId
             );
   if ((url||'').trim().length > 0){
     // update URLs and links (badges, etc.)
@@ -163,7 +168,7 @@ function updateUrls(formValues) {
   }
 }
 
-function build(providerSpec, log, fitAddon, path, pathType) {
+function build(providerSpec, log, fitAddon, path, pathType, launchProfileId) {
   update_favicon(BASE_URL + "favicon_building.ico");
   // split provider prefix off of providerSpec
   const spec = providerSpec.slice(providerSpec.indexOf('/') + 1);
@@ -178,7 +183,7 @@ function build(providerSpec, log, fitAddon, path, pathType) {
   $('.on-build').removeClass('hidden');
 
   const buildToken = $("#build-token").data('token');
-  const image = new BinderImage(providerSpec, BASE_URL, buildToken);
+  const image = new BinderImage(providerSpec, BASE_URL, buildToken, launchProfileId);
 
   image.onStateChange('*', function(oldState, newState, data) {
     if (data.message !== undefined) {
@@ -230,7 +235,7 @@ function build(providerSpec, log, fitAddon, path, pathType) {
   image.onStateChange('ready', function(oldState, newState, data) {
     image.close();
     // user server is ready, redirect to there
-    image.launch(data.url, data.token, path, pathType);
+    image.launch(data.url, data.token, path, pathType, launchProfileId);
   });
 
   image.fetch();
@@ -301,6 +306,14 @@ function indexMain() {
 
       $("#provider_prefix-selected").text($(this).text());
       $("#provider_prefix").val($(this).attr("value"));
+      updateUrls();
+    });
+
+    $("#launch_profile_sel li").click(function(event){
+      event.preventDefault();
+
+      $("#launch_profile-selected").text($(this).text());
+      $("#launch_profile_id").val($(this).attr("value"));
       updateRepoText();
       updateUrls();
     });
@@ -349,7 +362,8 @@ function indexMain() {
           formValues.providerPrefix + '/' + updated_repo + '/' + formValues.ref,
           log, fitAddon,
           formValues.path,
-          formValues.pathType
+          formValues.pathType,
+          formValues.launchProfileId
         );
         return false;
     });

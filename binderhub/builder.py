@@ -212,7 +212,10 @@ class BuildHandler(BaseHandler):
         if self.settings["use_registry"]:
             self.registry = self.settings["registry"]
 
-        self.event_log = self.settings["event_log"]
+        if self.settings["launch_profiles"]:
+            self.launch_profiles = self.settings["launch_profiles"]
+
+        self.event_log = self.settings['event_log']
 
     async def fail(self, message):
         await self.emit(
@@ -249,6 +252,17 @@ class BuildHandler(BaseHandler):
 
         # verify the build token and rate limit
         build_token = self.get_argument("build_token", None)
+        
+        self.jupyterhub_profile_id = "default-profile"
+
+        launch_profile_id = self.get_argument("launch_profile_id", None)
+        if launch_profile_id in self.launch_profiles:
+            launch_profile = self.launch_profiles[launch_profile_id]
+            if "jupyterhub_profile_id" in launch_profile:
+                self.jupyterhub_profile_id = launch_profile["jupyterhub_profile_id"]
+
+        app_log.debug(f"JupyterHub launch profile: {self.jupyterhub_profile_id}")
+
         self.check_build_token(build_token, f"{provider_prefix}/{spec}")
         self.check_rate_limit()
 
@@ -635,11 +649,14 @@ class BuildHandler(BaseHandler):
                         }
                     )
 
+                app_log.debug(f'Launching image with profile {self.jupyterhub_profile_id}')
+
                 extra_args = {
-                    "binder_ref_url": self.ref_url,
-                    "binder_launch_host": self.binder_launch_host,
-                    "binder_request": self.binder_request,
-                    "binder_persistent_request": self.binder_persistent_request,
+                    'binder_ref_url': self.ref_url,
+                    'binder_launch_host': self.binder_launch_host,
+                    'binder_request': self.binder_request,
+                    'binder_persistent_request': self.binder_persistent_request,
+                    'profile': self.jupyterhub_profile_id,
                 }
                 server_info = await launcher.launch(
                     image=self.image_name,

@@ -26,7 +26,10 @@
       {% block form %}
       <form id="build-form" class="form jumbotron">
         <h4 id="form-header" class='row'>Build and launch a repository</h4>
-        <input type="hidden" id="provider_prefix" value="{{repo_providers.keys() | list | first}}"/> 
+        <input type="hidden" id="provider_prefix" value="{{repo_providers.keys() | list | first}}"/>
+        {% if launch_profiles | length > 1 %}
+        <input type="hidden" id="launch_profile_id" value="{{launch_profiles.keys() | list | first}}"/> 
+        {% endif %}
         <div class="form-group row">
           <label for="repository">{{(repo_providers.values() | list | first).labels.text}}</label>
           <div class="input-group">
@@ -47,6 +50,26 @@
               </ul>
             </div>
             <input class="form-control" type="text" id="repository" data-lpignore="true" placeholder="{{(repo_providers.values() | list | first).labels.text}}"/>
+            {% if launch_profiles | length > 1 %}
+            <div class="input-group-btn" id="launch-profile-btn">
+              <button type="button" class="btn btn-secondary dropdown-toggle"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                title="Specify target instance"
+              >
+
+              <span id="launch_profile-selected">
+                {{(launch_profiles.values() | list | first).display_name}}
+              </span>
+
+              <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" id="launch_profile_sel">
+                {% for launch_profile_id, launch_profile in launch_profiles.items() %}
+                  <li class="dropdown-item" value={{launch_profile_id}}><a href="#">{{launch_profile.display_name}}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
           </div>
         </div>
         <div class="form-row row">

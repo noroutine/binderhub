@@ -506,7 +506,7 @@ class KubernetesBuildExecutor(BuildExecutor):
         else:
             app_log.info("Started build %s", self.name)
 
-        app_log.info("Watching build pod %s", self.name)
+        app_log.info("Watching build pod %s in %s", self.name, self.namespace)
         while not self.stop_event.is_set():
             w = watch.Watch()
             try:
