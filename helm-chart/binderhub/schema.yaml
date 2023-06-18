@@ -150,6 +150,21 @@ properties:
           A list of references to existing Kubernetes Secrets with credentials
           to pull the image.
 
+  dockerConfig:
+    type: object
+    additionalProperties: false
+    description: |
+      TODO
+    properties:
+      useExistingSecret:
+        type: boolean
+        description: |
+          TODO
+      secretName:
+        type: [string, "null"]
+        description: |
+          TODO
+
   registry:
     type: object
     additionalProperties: false

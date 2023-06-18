@@ -63,7 +63,11 @@ spec:
       {{- if .Values.config.BinderHub.use_registry }}
       - name: docker-secret
         secret:
+          {{- if .Values.dockerConfig.useExistingSecret }}
+          secretName: {{ .Values.dockerConfig.secretName }}
+          {{- else }}
           secretName: {{ include "binderhub.fullname" . }}-binder-build-docker-config
+          {{- end }}
       {{- else }}
       - name: docker-socket
         hostPath:

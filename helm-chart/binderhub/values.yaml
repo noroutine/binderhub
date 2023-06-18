@@ -22,6 +22,12 @@ image:
   pullPolicy: ""
   pullSecrets: []
 
+# kubernetes secret name with docker config inside
+# use additional input parameter to stay at least partially compatible with source chart
+dockerConfig:
+  useExistingSecret: false
+  secretName: binder-precreated-docker-config
+
 # registry here is only used to create docker config.json
 registry:
   # key in 'auths' in docker config.json,
